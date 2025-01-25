@@ -1,1 +1,1 @@
-# https-github.com-KarlDelfin-BulletinBoard.Laravel-Vue
+# BulletinBoard.Laravel-Vue
