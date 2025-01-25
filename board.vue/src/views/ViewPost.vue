@@ -10,7 +10,17 @@
   <br />
   <b>File</b>
   <br />
-  <img :src="form.file" height="200" width="200" />
+  <img v-if="isValidImage(form.file) == 'image'" :src="form.file" height="200" width="200" />
+  <video v-else-if="isValidImage(form.file) == 'video'" width="400" controls>
+    <source :src="form.file" type="video/mp4" />
+    <source :src="form.file" type="video/ogg" />
+    Your browser does not support HTML video.
+  </video>
+  <a v-else :href="form.file" download>
+    Download file
+    <br />
+    <img src="../assets/document.png" height="100" width="100"
+  /></a>
 
   <br />
   <button @click="$router.push('/')">Back</button>
@@ -35,6 +45,21 @@ export default {
   },
 
   methods: {
+    isValidImage(src) {
+      const base64Pattern = /^data:image\/(png|jpg|jpeg|gif);base64,/
+      if (base64Pattern.test(src)) {
+        return 'image'
+      }
+
+      const videoPattern = /^data:video\/mp4;base64,/
+      if (videoPattern.test(src)) {
+        return 'video'
+      }
+
+      const image = new Image()
+      image.src = src
+      return image.complete && image.height !== 0
+    },
     getPostByPostId() {
       axios.get(`${api}/Post/${this.postId}`).then((response) => {
         this.form.writer = response.data.writer

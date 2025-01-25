@@ -26,7 +26,7 @@ export default {
   data() {
     return {
       file: [],
-
+      fileExtension: '',
       form: {
         writer: '',
         subject: '',
@@ -37,8 +37,8 @@ export default {
 
   methods: {
     onchangeFile(e) {
-      console.log(e.target.files[0])
       this.file = e.target.files[0]
+      this.fileExtension = e.target.files[0].name.split('.').pop().toLowerCase()
     },
 
     submitForm() {
@@ -52,6 +52,7 @@ export default {
             subject: this.form.subject,
             message: this.form.message,
             file: encodedFile,
+            fileExtension: this.fileExtension,
           }
           console.log(data)
 

@@ -15,7 +15,18 @@
   <br />
   <label for="File">File</label>
   <br />
-  <img :src="form.file" height="200" width="200" />
+  <img v-if="isValidImage(form.file) == 'image'" :src="form.file" height="200" width="200" />
+  <video v-else-if="isValidImage(form.file) == 'video'" width="400" controls>
+    <source :src="form.file" type="video/mp4" />
+    <source :src="form.file" type="video/ogg" />
+    Your browser does not support HTML video.
+  </video>
+  <a v-else :href="form.file" download>
+    Download file
+    <br />
+    <img src="../assets/document.png" height="100" width="100"
+  /></a>
+  <br />
   <button @click="$router.push(`/post?postId=${postId}`)">Back</button>
   <button @click="submitForm">Submit</button>
 </template>
@@ -27,6 +38,7 @@ export default {
   data() {
     return {
       file: [],
+      fileExtension: '',
       postId: '',
       form: {
         writer: '',
@@ -38,9 +50,24 @@ export default {
   },
 
   methods: {
+    isValidImage(src) {
+      const base64Pattern = /^data:image\/(png|jpg|jpeg|gif);base64,/
+      if (base64Pattern.test(src)) {
+        return 'image'
+      }
+
+      const videoPattern = /^data:video\/mp4;base64,/
+      if (videoPattern.test(src)) {
+        return 'video'
+      }
+
+      const image = new Image()
+      image.src = src
+      return image.complete && image.height !== 0
+    },
     onchangeFile(e) {
       this.file = e.target.files[0]
-      console.log(this.file.length)
+      this.fileExtension = e.target.files[0].name.split('.').pop().toLowerCase()
     },
 
     submitForm() {
@@ -54,9 +81,9 @@ export default {
             subject: this.form.subject,
             message: this.form.message,
             file: encodedFile,
+            fileExtension: this.fileExtension,
           }
           axios.put(`${api}/Post/${this.postId}`, data).then(() => {
-            console.log('success')
             this.getPostByPostId()
           })
         }
@@ -90,7 +117,6 @@ export default {
     const postId = url.get('postId')
     this.postId = postId
     this.getPostByPostId()
-    console.log(this.file.length)
   },
 }
 </script>
