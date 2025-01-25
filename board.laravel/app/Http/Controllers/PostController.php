@@ -2,16 +2,32 @@
 
 namespace App\Http\Controllers;
 use App\Models\Post;
+use App\Http\Logics\PaginationLogic;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $posts = DB::select("SELECT * FROM posts");
-        return response()->json($posts, 200);
+        $currentPage = $request->input('currentPage', 1);
+        $elementsPerPage = $request->input('elementsPerPage', 10);
+        $search = $request->input('search', '');
+        $select = $request->input('select', 'writer');
+
+        $paginationRequest = [
+            'currentPage' => $currentPage,
+            'elementsPerPage' => $elementsPerPage
+        ];
+
+        $posts = Post::query();
+        if($search != ''){
+            $posts = $posts->where($select, 'LIKE', '%'.$search.'%');
+        }
+        $posts = $posts->get();
+        $pagination = (new PaginationLogic())->paginateData($posts, $paginationRequest);
+        return response()->json($pagination, 200);
     }
 
     public function store(Request $request)

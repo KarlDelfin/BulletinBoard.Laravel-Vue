@@ -1,4 +1,13 @@
 <template>
+  <select v-model="select">
+    <option value="writer">Writer</option>
+    <option value="subject">Subject</option>
+  </select>
+  <form @submit.prevent="getPost">
+    <input v-model="search" />
+    <button type="submit">Search</button>
+  </form>
+  <div>Total Elements: {{ pagination.totalElements }}</div>
   <table>
     <tr>
       <th>No.</th>
@@ -16,7 +25,15 @@
       <td>{{ post.date_time_created }}</td>
     </tr>
   </table>
-  <button @click="deleteMultiplePost">Delete</button>
+  <el-pagination
+    layout="prev, pager, next"
+    v-model:current-page="pagination.currentPage"
+    v-model:page-size="pagination.elementsPerPage"
+    :total="pagination.totalElements"
+    @size-change="getPost"
+    @current-change="getPost"
+  />
+  <button @click="deleteMultiplePost" :disabled="checkedPost.length == 0">Delete</button>
   <button @click="$router.push('/create-post')">Create</button>
 </template>
 
@@ -26,6 +43,13 @@ const api = 'http://127.0.0.1:8000/api'
 export default {
   data() {
     return {
+      select: 'writer',
+      search: '',
+      pagination: {
+        currentPage: 1,
+        elementsPerPage: 10,
+        totalElements: 0,
+      },
       checkedPost: [],
       posts: [],
     }
@@ -48,7 +72,7 @@ export default {
       }
 
       const data = {
-        ids: this.checkedPost, // Make sure 'checkedPost' contains an array of IDs
+        ids: this.checkedPost,
       }
 
       axios
@@ -63,9 +87,14 @@ export default {
     },
 
     getPost() {
-      axios.get(`${api}/Post`).then((response) => {
-        this.posts = response.data
-      })
+      axios
+        .get(
+          `${api}/Post?currentPage=${this.pagination.currentPage}&elementsPerPage=${this.pagination.elementsPerPage}&search=${this.search}&select=${this.select}`,
+        )
+        .then((response) => {
+          this.posts = response.data.results
+          this.pagination.totalElements = response.data.totalElements
+        })
     },
   },
   mounted() {
