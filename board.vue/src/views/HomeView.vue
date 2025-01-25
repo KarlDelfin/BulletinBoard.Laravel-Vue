@@ -43,7 +43,7 @@ const api = 'http://127.0.0.1:8000/api'
 export default {
   data() {
     return {
-      select: 'writer',
+      select: 'subject',
       search: '',
       pagination: {
         currentPage: 1,

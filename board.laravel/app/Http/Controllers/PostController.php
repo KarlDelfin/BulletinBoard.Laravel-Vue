@@ -14,7 +14,7 @@ class PostController extends Controller
         $currentPage = $request->input('currentPage', 1);
         $elementsPerPage = $request->input('elementsPerPage', 10);
         $search = $request->input('search', '');
-        $select = $request->input('select', 'writer');
+        $select = $request->input('select', 'subject');
 
         $paginationRequest = [
             'currentPage' => $currentPage,
@@ -22,9 +22,11 @@ class PostController extends Controller
         ];
 
         $posts = Post::query();
+        $posts = $posts->orderBy('date_time_created', 'DESC');
         if($search != ''){
             $posts = $posts->where($select, 'LIKE', '%'.$search.'%');
         }
+
         $posts = $posts->get();
         $pagination = (new PaginationLogic())->paginateData($posts, $paginationRequest);
         return response()->json($pagination, 200);

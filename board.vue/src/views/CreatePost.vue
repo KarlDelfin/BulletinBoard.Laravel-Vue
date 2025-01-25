@@ -1,20 +1,22 @@
 <template>
-  <label for="writer">Writer</label>
-  <br />
-  <input id="writer" v-model="form.writer" placeholder="Enter Writer" />
-  <br />
-  <label for="subject">Subject</label>
-  <br />
-  <input id="subject" v-model="form.subject" placeholder="Enter Subject" />
-  <br />
-  <label for="message">Message</label>
-  <br />
-  <textarea id="message" v-model="form.message" placeholder="Message"></textarea>
-  <br />
-  <input type="file" @change="onchangeFile" accept=".jpg, .png, .jpeg" />
-  <br />
-  <button @click="$router.push('/')">Home</button>
-  <button @click="submitForm">Submit</button>
+  <form @submit.prevent="submitForm">
+    <label for="writer">Writer</label>
+    <br />
+    <input id="writer" v-model="form.writer" placeholder="Enter Writer" />
+    <br />
+    <label for="subject">Subject</label>
+    <br />
+    <input id="subject" v-model="form.subject" placeholder="Enter Subject" />
+    <br />
+    <label for="message">Message</label>
+    <br />
+    <textarea id="message" v-model="form.message" placeholder="Message"></textarea>
+    <br />
+    <input type="file" @change="onchangeFile" accept=".jpg, .png, .jpeg" />
+    <br />
+    <button type="button" @click="$router.push('/')">Home</button>
+    <button type="submit">Submit</button>
+  </form>
 </template>
 
 <script>
