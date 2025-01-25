@@ -84,6 +84,7 @@ export default {
             fileExtension: this.fileExtension,
           }
           axios.put(`${api}/Post/${this.postId}`, data).then(() => {
+            this.$router.push(`/post?postId=${this.postId}`)
             this.getPostByPostId()
           })
         }
@@ -97,7 +98,7 @@ export default {
           file: '',
         }
         axios.put(`${api}/Post/${this.postId}`, data).then(() => {
-          console.log('success')
+          this.$router.push(`/post?postId=${this.postId}`)
           this.getPostByPostId()
         })
       }

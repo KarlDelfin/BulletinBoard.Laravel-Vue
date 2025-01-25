@@ -54,7 +54,6 @@ export default {
             file: encodedFile,
             fileExtension: this.fileExtension,
           }
-          console.log(data)
 
           axios.post(`${api}/Post`, data).then(() => {
             this.$router.push('/')

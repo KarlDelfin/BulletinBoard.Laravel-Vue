@@ -53,12 +53,12 @@ class PostController extends Controller
 
     public function show(string $id)
     {
-        $filePath = public_path('images/'.$post->file);
+
         $post = Post::find($id);
         if(!$post){
             return response()->json('Post not found', 404);
         }
-
+        $filePath = public_path('images/'.$post->file);
         if (!file_exists($filePath)) { // check if file does exists
             $data = [
                 'writer' => $post->writer,
